@@ -1,15 +1,15 @@
 """
 	Copyright 2024 Eric Hernandez
 
-    This file is part of ploc.
+    This file is part of ShareVid.
 
-    ploc is free software: you can redistribute it and/or modify it under the terms of the GNU General
+    ShareVid is free software: you can redistribute it and/or modify it under the terms of the GNU General
     Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-    ploc is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
+    ShareVid is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License along with ploc. If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General Public License along with ShareVid. If not, see <https://www.gnu.org/licenses/>.
 """
 
 import sqlite3
@@ -42,8 +42,8 @@ def check_user(username, password):
 
 	return False
 
-def change_password(username, password, new_password):
-	sql_statement = "UPDATE users SET password = '{new_password}'  WHERE username = '{username}' AND password = '{password}'"
+def change_password(username, new_password):
+	sql_statement = f"UPDATE users SET password = '{new_password}' WHERE username = '{username}'"
 
 	cursor.execute(sql_statement)
 	connection.commit()
@@ -105,7 +105,7 @@ def update_video_db():
 	for video in listdir("static/videos/"):
 		if isfile("static/videos/" + video):
 			name, extension, year, path = format_video_name("static/videos/" + video)
-			sql_statement = "INSERT INTO videos(name, format, year, path) VALUES({name}, {extension}, {year}, {path});"
+			sql_statement = f"INSERT INTO videos(name, format, year, path) VALUES({name}, {extension}, {year}, {path});"
 			cursor.execute(sql_statement)
 			connection.commit()
 
