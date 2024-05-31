@@ -13,12 +13,9 @@
 """
 
 import sqlite3
+from main import connection, cursor
 from os import listdir
 from os.path import isfile
-
-USER_DB = "users.db"
-connection = sqlite3.connect(USER_DB)
-cursor = connection.cursor()
 
 def get_sql(sql_file_name):
 	sql_file = open(sql_file_name)
@@ -42,13 +39,15 @@ def check_user(username, password):
 
 	return False
 
-def change_password(username, new_password):
-	sql_statement = f"UPDATE users SET password = '{new_password}' WHERE username = '{username}'"
+def change_password(username, old_password, new_password):
+	sql_statement = f"UPDATE users SET password = '{new_password}' WHERE username = '{username}' AND password = '{old_password}'"
 
 	cursor.execute(sql_statement)
 	connection.commit()
-	connection.close()
-	return True
+	if cursor.rowcount == 1:
+		return True
+
+	return False
 
 def to_string(array):
 	string = ""
@@ -108,8 +107,6 @@ def update_video_db():
 			sql_statement = f"INSERT INTO videos(name, format, year, path) VALUES({name}, {extension}, {year}, {path});"
 			cursor.execute(sql_statement)
 			connection.commit()
-
-	connection.close()
 	return
 
 if __name__ == '__main__':
