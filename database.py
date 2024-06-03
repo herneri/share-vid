@@ -1,15 +1,20 @@
 """
-	Copyright 2024 Eric Hernandez
+    Copyright (C) 2024  Eric Hernandez
 
-    This file is part of ShareVid.
+	This file is part of ShareVid.
 
-    ShareVid is free software: you can redistribute it and/or modify it under the terms of the GNU General
-    Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+    ShareVid is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
 
-    ShareVid is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
-    the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+    ShareVid is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU General Public License along with ShareVid. If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with ShareVid.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import sqlite3
