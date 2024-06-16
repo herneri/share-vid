@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %} Home {% endblock %}
+
+{% block main %}
+	<h1> Welcome to ShareVid </h1>
+
+	<!-- Notices to the user regarding login/passwords are displayed here -->
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			{% for message in messages %}
+				<p class="message"> {{message}} </p>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	
+	<form action="#" method="post">
+		<h2> Username </h2>
+		<input type="text" name="username"/>
+
+		<h2> Password </h2>
+		<input type="password" name="password"/>
+		<input type="submit" value="Login"/>
+	</form>
+{% endblock %}
