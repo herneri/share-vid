@@ -32,8 +32,23 @@ header {
 }
 
 /* Main */
-h1 {
+h1, h2 {
 	text-align: center;
+}
+
+input {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+
+	margin-top: 6px;
+}
+
+#login-form { 
+	margin-left: 2%;
+	margin-right: 2%;
+
+	padding: 5px;
 }
 
 /* Footer */
