@@ -19,16 +19,17 @@
     along with ShareVid.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from flask import Flask, render_template, redirect, url_for, request, session, flash
+from flask import Flask, render_template, redirect, url_for, request, session, flash, get_flashed_messages
 import sqlite3
 import database
-import video as video
+from video import Video, videos_by_year, search_video
 
 USER_DB = "share-vid.db"
 connection = sqlite3.connect(USER_DB, check_same_thread=False)
 cursor = connection.cursor()
 
 app = Flask(__name__)
+app.secret_key = "foo"
 
 @app.route("/", methods=["POST", "GET"])
 @app.route("/home/", methods=["POST", "GET"])
@@ -65,18 +66,23 @@ def year(year):
 		flash("You are not logged in", "error")
 		return redirect(url_for("home"))
 
-	session["videos"] = video.Video.videos_by_year(year, cursor)
-	return render_template("year.html", year=year, videos=session["videos"])
+	videos = videos_by_year(year, cursor)
+	if videos == []:
+		flash(f"No videos from {year} have been found", "notice")
+		return redirect(url_for("error", code=404))
 
-# Get video path or data from 'homepage' and pass it here
+	return render_template("year.html", year=year, videos=videos)
+
 @app.route("/video/<video_name>")
 def video(video_name):
 	if "username" not in session:
 		flash("You are not logged in", "error")
 		return redirect(url_for("home"))
-	elif "videos" not in session:
-		flash("Videos must be accessed from the path /[YEAR]-video first", "error")
-		return redirect(url_for("home"))
+	
+	video = search_video(video_name, cursor)
+	if video == None:
+		flash(f"Failed to find video titled \"{video_name}\"")
+		return redirect(url_for("error", code=404))
 
 	return render_template("video.html", title=video.name, year=video.year, path=video.path)
 
@@ -97,6 +103,14 @@ def change_pw():
 		return redirect(url_for("change_pw"))
 
 	return render_template("change-pw.html")
+
+@app.route("/error/<code>")
+def error(code):
+	msgs = get_flashed_messages()
+	if not msgs:
+		return redirect(url_for("home"))
+
+	return render_template("error.html", msgs=msgs), code
 
 @app.route("/logout/")
 def logout():
