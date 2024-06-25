@@ -1,0 +1,28 @@
+.year-block {
+	text-align: center;
+
+	margin-left: 2%;
+	margin-right: 2%;
+}
+
+.year-title {
+	width: 10%;
+	color: black;
+	background: #ff3300;
+
+	padding: 5px;
+
+	border-style: solid;
+	border-width: 2px;
+	border-color: blue;
+
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.year-video {
+	display: block;
+
+	margin-left: auto;
+	margin-right: auto;
+}

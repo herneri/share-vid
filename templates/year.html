@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %} {{year}} Videos {% endblock %}
+
+{% block main %}
+	<link rel="stylesheet" href="{{ url_for("static", filename="css/year.css") }}"/>
+	<h1> {{year}} Videos </h1>
+
+	{% for video in videos %}
+		<span class="year-block">
+			<a href="{{ url_for("video", video_name=video.name) }}">
+			<p class="year-title"> {{video.name}}</p>
+			<video class="year-video" src="{{ url_for("static", filename=video.path) }}" width=20%/>
+			</a>
+		</span>
+	{% endfor %}
+{% endblock %}
