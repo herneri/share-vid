@@ -1,0 +1,16 @@
+main {
+	margin-bottom: 2%;
+}
+
+.year {
+	color: black;
+	background: #ff3300;
+
+	border-style: solid;
+	border-color: blue;
+	border-width: 2px;
+
+	padding: 5px;
+
+	margin: 5%;
+}

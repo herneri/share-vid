@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %} {{user}}'s Home {% endblock %}
+
+{% block main %}
+	<link rel="stylesheet" href="{{ url_for("static", filename="css/homepage.css") }}"/>
+	<h1> Welcome back, {{user}} </h1>
+
+	{% for year in years %}
+		<a href="{{ url_for("year", year=year) }}"> <span class="year"> {{year}} </span> </a>
+	{% endfor %}
+{% endblock %}

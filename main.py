@@ -28,6 +28,9 @@ USER_DB = "share-vid.db"
 connection = sqlite3.connect(USER_DB, check_same_thread=False)
 cursor = connection.cursor()
 
+# The years of the videos that the website will be providing
+years = (2024, 2019, 2018, 2017, 2016, 2015, 2014)
+
 app = Flask(__name__)
 app.secret_key = "foo"
 
@@ -58,7 +61,7 @@ def homepage(user):
 		flash("You are not logged in", "error")
 		return redirect(url_for("home"))
 
-	return render_template("homepage.html", user=user)
+	return render_template("homepage.html", user=user, years=years)
 
 @app.route("/<year>-videos/")
 def year(year):
@@ -124,4 +127,3 @@ def logout():
 if __name__ == "__main__":
 	app.run(debug=True)
 	connection.close()
-
