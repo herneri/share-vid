@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %} {{title}} {% endblock %}
+
+{% block main %}
+	<link rel="stylesheet" href="{{ url_for("static", filename="css/video.css") }}"/>
+
+	<h1 id="video-title"> {{title}} - ({{year}}) </h1>
+	<video src="{{ url_for("static", filename=path) }}" controls/>
+{% endblock %}
