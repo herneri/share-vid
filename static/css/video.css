@@ -1,10 +1,7 @@
 /* Video page body */
-#video-title {
-    margin-left: 25%;
-    margin-right: 25%;
-}
-
 video {
-    margin-left: 25%;
-    margin-right: 25%;
+	display: block;
+	width: 60%;
+	margin-right: auto;
+	margin-left: auto;
 }
