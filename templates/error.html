@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %} Error {{code}} {% endblock %}
+
+{% block main %}
+		{% if msgs %}
+			{% for msg in msgs %}
+				<h1 class="message"> {{msg}} </h1>
+			{% endfor %}
+		{% endif %}
+{% endblock %}
