@@ -36,8 +36,7 @@ def init_db():
 	return
 
 def check_user(username, password):
-	sql_statement = f"SELECT username FROM users WHERE username = '{username}' AND password = '{password}'"
-	result = cursor.execute(sql_statement)
+	result = cursor.execute("SELECT username FROM users WHERE username = ? AND password = ?", (username, password))
 
 	if result.fetchone():
 		return True
@@ -45,9 +44,7 @@ def check_user(username, password):
 	return False
 
 def change_password(username, old_password, new_password):
-	sql_statement = f"UPDATE users SET password = '{new_password}' WHERE username = '{username}' AND password = '{old_password}'"
-
-	cursor.execute(sql_statement)
+	cursor.execute("UPDATE users SET password = ? WHERE username = ? AND password = ?", (new_password, username, old_password))
 	connection.commit()
 	if cursor.rowcount == 1:
 		return True
@@ -109,8 +106,7 @@ def update_video_db():
 	for video in listdir("static/videos/"):
 		if isfile("static/videos/" + video):
 			name, extension, year, path = format_video_name("static/videos/" + video)
-			sql_statement = f"INSERT INTO videos(name, format, year, path) VALUES({name}, {extension}, {year}, {path});"
-			cursor.execute(sql_statement)
+			cursor.execute("INSERT INTO videos(name, format, year, path) VALUES(?, ?, ?, ?)", (name, extension, year, path))
 			connection.commit()
 	return
 
