@@ -27,8 +27,7 @@ class Video:
 		self.path = path
 
 def search_video(name, cursor):
-	sql_statement = f"SELECT id, name, year, path FROM videos WHERE name = '{name}'"
-	result = cursor.execute(sql_statement)
+	result = cursor.execute("SELECT id, name, year, path FROM videos WHERE name = ?", (name,))
 	data = result.fetchone()
 
 	if not data:
@@ -37,10 +36,9 @@ def search_video(name, cursor):
 	return Video(data[0], data[1], data[2], data[3])
 
 def videos_by_year(year, cursor):
-	sql_statement = f"SELECT id, name, year, path FROM videos WHERE year = {year}"
 	videos = []
 
-	results = cursor.execute(sql_statement)
+	results = cursor.execute("SELECT id, name, year, path FROM videos WHERE year = ?", (year,))
 	for video in results.fetchall():
 		video_object = Video(video[0], video[1], video[2], video[3])
 		videos.append(video_object)
