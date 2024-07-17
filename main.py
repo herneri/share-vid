@@ -96,6 +96,10 @@ def change_pw():
 		old_password = request.form["old_password"]
 		new_password = request.form["new_password"]
 
+		if len(new_password) < 8:
+			flash("Password must be over 8 characters long", "error")
+			return redirect(url_for("change_pw"))
+
 		change_status = database.change_password(username, old_password, new_password)
 
 		if change_status == True:
