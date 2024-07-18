@@ -19,6 +19,9 @@
 
 import sqlite3
 from main import connection, cursor
+
+import bcrypt
+
 from os import listdir
 from os.path import isfile
 
@@ -58,6 +61,13 @@ def to_string(array):
 		string += char
 
 	return string
+
+# Hashes and salts password for storage in database
+def secure_password(password):
+	byte_password = password.encode("utf-8")
+	salt = bcrypt.gensalt()
+
+	return bcrypt.hashpw(byte_password, salt), salt
 
 def format_video_name(name, delimiter):
 	new_name = ""
