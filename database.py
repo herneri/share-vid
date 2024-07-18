@@ -38,10 +38,21 @@ def init_db():
 
 	return
 
-def check_user(username, password):
-	result = cursor.execute("SELECT username FROM users WHERE username = ? AND password = ?", (username, password))
+# Hashes and salts password for storage in database
+def secure_password(password):
+	byte_password = password.encode("utf-8")
+	salt = bcrypt.gensalt()
 
-	if result.fetchone():
+	return bcrypt.hashpw(byte_password, salt), salt
+
+def check_user(username, password):
+	result = cursor.execute("SELECT password, salt FROM users WHERE username = ?", (username,))
+
+	data = result.fetchone()
+	database_password, salt = data[0], data[1]
+	input_password = bcrypt.hashpw(password.encode("utf-8"), salt)
+
+	if database_password == input_password:
 		return True
 
 	return False
@@ -62,12 +73,6 @@ def to_string(array):
 
 	return string
 
-# Hashes and salts password for storage in database
-def secure_password(password):
-	byte_password = password.encode("utf-8")
-	salt = bcrypt.gensalt()
-
-	return bcrypt.hashpw(byte_password, salt), salt
 
 def format_video_name(name, delimiter):
 	new_name = ""
