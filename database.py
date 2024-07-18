@@ -22,9 +22,6 @@ from main import connection, cursor
 
 import bcrypt
 
-from os import listdir
-from os.path import isfile
-
 def get_sql(sql_file_name):
 	sql_file = open(sql_file_name)
 	sql = sql_file.read()
@@ -76,62 +73,3 @@ def change_password(username, old_password, new_password):
 		return False
 
 	return True
-
-def to_string(array):
-	string = ""
-
-	for char in array:
-		string += char
-
-	return string
-
-def format_video_name(name, delimiter):
-	new_name = ""
-
-	for char in name:
-		if char == delimiter:
-			new_name += " "
-			continue
-
-		new_name += char
-
-	return new_name
-
-def parse_video_name(video_name):
-	name = None
-	extension = None
-	year = None
-	path = video_name
-	
-	buffer = []
-	ignore_delimiter = True
-
-	i = len(video_name) - 1
-	while i >= 0:
-		if video_name[i] == '.' and ignore_delimiter == True:
-			if extension == None:
-				extension = to_string(buffer)
-			elif year == None:
-				year = to_string(buffer)
-				ignore_delimiter = False
-
-			buffer = []
-			i -= 1
-			continue
-		elif video_name[i] == '/':
-			if name == None:
-				name = format_video_name(to_string(buffer), '.')
-				break
-
-		buffer.insert(0, video_name[i])
-		i -= 1
-
-	return name, extension, year, path
-
-def update_video_db():
-	for video in listdir("static/videos/"):
-		if isfile("static/videos/" + video):
-			name, extension, year, path = format_video_name("static/videos/" + video)
-			cursor.execute("INSERT INTO videos(name, format, year, path) VALUES(?, ?, ?, ?)", (name, extension, year, path))
-			connection.commit()
-	return
