@@ -65,12 +65,17 @@ def check_user(username, password):
 	return False
 
 def change_password(username, old_password, new_password):
-	cursor.execute("UPDATE users SET password = ? WHERE username = ? AND password = ?", (new_password, username, old_password))
-	connection.commit()
-	if cursor.rowcount == 1:
-		return True
+	if check_user(username, old_password) == False:
+		return False
 
-	return False
+	hashed_password, salt = secure_password(new_password)
+
+	cursor.execute("UPDATE users SET password = ?, salt = ? WHERE username = ?", (hashed_password, salt, username))
+	connection.commit()
+	if cursor.rowcount == 0:
+		return False
+
+	return True
 
 def to_string(array):
 	string = ""
@@ -79,7 +84,6 @@ def to_string(array):
 		string += char
 
 	return string
-
 
 def format_video_name(name, delimiter):
 	new_name = ""
