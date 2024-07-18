@@ -45,6 +45,13 @@ def secure_password(password):
 
 	return bcrypt.hashpw(byte_password, salt), salt
 
+def add_user(username, password):
+    hashed_password, salt = secure_password(password)
+    cursor.execute("INSERT INTO users(username, password, salt) VALUES(?, ?, ?)", (username, hashed_password, salt))
+    connection.commit()
+
+    return
+
 def check_user(username, password):
 	result = cursor.execute("SELECT password, salt FROM users WHERE username = ?", (username,))
 
