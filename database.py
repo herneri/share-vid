@@ -131,6 +131,3 @@ def update_video_db():
 			cursor.execute("INSERT INTO videos(name, format, year, path) VALUES(?, ?, ?, ?)", (name, extension, year, path))
 			connection.commit()
 	return
-
-if __name__ == '__main__':
-	pass
