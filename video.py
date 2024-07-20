@@ -21,6 +21,9 @@ import sqlite3
 from os import listdir
 from os.path import isfile
 
+# Character that seperates words in a video's name
+delimiter = '_'
+
 class Video:
 	def __init__(self, id_num, name, year, path):
 		self.id = id_num
@@ -68,40 +71,45 @@ def format_video_name(name, delimiter):
     return new_name
 
 def parse_video_name(video_name):
-    name = None
-    extension = None
-    year = None
-    path = video_name
+	name = None
+	extension = None
+	year = None
+	path = video_name
 
-    buffer = []
-    ignore_delimiter = True
+	# Ignore delimiter while finding extension and year,
+	# once found collect it when getting the video name
+	ignore_delimiter = True
+	buffer = []
 
-    i = len(video_name) - 1
-    while i >= 0:
-        if video_name[i] == '.' and ignore_delimiter == True:
-            if extension == None:
-                extension = to_string(buffer)
-            elif year == None:
-                year = to_string(buffer)
-                ignore_delimiter = False
+	i = len(video_name) - 1
+	while i >= 0:
+		if ignore_delimiter == True and (video_name[i] == '.' or video_name[i] == delimiter):
+			if extension == None:
+				extension = to_string(buffer)
+			elif year == None:
+				year = to_string(buffer)
+				ignore_delimiter = False
 
-            buffer = []
-            i -= 1
-            continue
-        elif video_name[i] == '/':
-            if name == None:
-                name = format_video_name(to_string(buffer), '.')
-                break
+			buffer = []
+			i -= 1
+			continue
+		# The video name ends here and
+		# the path starts, all data is collected
+		elif video_name[i] == '/':
+			if name == None:
+				name = format_video_name(to_string(buffer), delimiter)
+				break
 
-        buffer.insert(0, video_name[i])
-        i -= 1
+		buffer.insert(0, video_name[i])
+		i -= 1
 
-    return name, extension, year, path
+	return name, extension, year, path
 
-def update_video_db():
-    for video in listdir("static/videos/"):
-        if isfile("static/videos/" + video):
-            name, extension, year, path = format_video_name("static/videos/" + video)
-            cursor.execute("INSERT INTO videos(name, format, year, path) VALUES(?, ?, ?, ?)", (name, extension, year, path))
-            connection.commit()
-    return
+def update_video_db(connection, cursor):
+	for video in listdir("static/videos/"):
+		if isfile("static/videos/" + video):
+			name, extension, year, path = parse_video_name("videos/" + video)
+			cursor.execute("INSERT INTO videos(name, format, year, path) VALUES(?, ?, ?, ?)", (name, extension, year, path))
+			connection.commit()
+
+	return
