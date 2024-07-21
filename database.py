@@ -30,9 +30,10 @@ def get_sql(sql_file_name):
 	return sql
 
 def init_db():
-	sql_statement = get_sql("sql/create-tables.mysql")
-	cursor.execute(sql_statement)
+	sql_statement = get_sql("sql/create-tables.sql")
+	cursor.executescript(sql_statement)
 
+	connection.commit()
 	return
 
 # Hashes and salts password for storage in database
