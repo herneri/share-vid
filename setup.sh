@@ -20,19 +20,14 @@ if [ "$1" = "-h" ] || [ ! $1 ]; then
 	exit 0
 fi
 
-if ! which python3; then
-	printf "ERROR: Python 3 is not installed \n"
-	exit 1
-elif ! which flask; then
-	printf "ERROR: Flask is not installed \n"
-	exit 1
-elif ! which mysql; then
-	printf "ERROR: MySQL is not installed \n"
-	exit 1
-elif ! which httpd; then
-	printf "ERROR: Apache web server is not installed \n"
-	exit 1
-fi
+dependencies="python3 flask mysql httpd"
+for dependency in $dependencies
+do
+	if ! which $dependency >> /dev/null; then
+		printf "ERROR: $dependency is not installed \n"
+		exit 1
+	fi
+done
 
 mkdir static/videos
 cp $1/* static/videos/
