@@ -55,7 +55,21 @@ if operation == "-a":
 		print(f"User, {username}, sucessfully created!")
 elif operation == "-u":
 	if argv[2] == "-v":
-		video.update_video_db()
+		print("WARNING: This will erase all current data on the video table,")
+		print("it will also go through every video and insert them all. Are you sure you want to do this? [y/N]")
+		user_choice = input()
+		if user_choice == "" or user_choice == "N" or user_choice == "n":
+			print("Video update operation aborted")
+			exit(0)
+
+		print("Deleting videos table...")
+		cursor.execute("DROP TABLE videos")
+		connection.commit()
+
+		database.init_db()
+		print("Updating videos table...")
+		video.update_video_db(connection, cursor)
+		print("Update complete")
 	elif argv[2] == "-p":
 		if len(argv) != 4:
 			stderr.write("sv-mgmt: Username required for changing a password \n")
