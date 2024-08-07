@@ -20,12 +20,12 @@
 """
 
 from flask import Flask, render_template, redirect, url_for, request, session, flash, get_flashed_messages
-import sqlite3
+import pymysql
 import database
 from video import Video, videos_by_year, search_video
 
-USER_DB = "share-vid.db"
-connection = sqlite3.connect(USER_DB, check_same_thread=False)
+USER_DB = "sharevid"
+connection = pymysql.connect(host="localhost", user="root", password="", database=USER_DB)
 cursor = connection.cursor()
 
 # The years of the videos that the website will be providing
