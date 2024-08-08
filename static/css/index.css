@@ -1,23 +1,28 @@
 /* Base style */
 body {
 	margin: 0;
+	font-family: Helvetica, sans-serif;
 }
 
 /* Header */
 header {
 	text-align: center;
-	background: #666699;
+	background: #355C7D;
 	padding: 1%;
 }
 
-.nav-button {
-	background-color: #ff3300;
-
-	padding: 4px;
+.nav-button, .year, .year-title {
+	background-color: #C06C84;
 
 	border-style: solid;
 	border-width: 2px;
-	border-color: blue;
+	border-color: #F67280;
+
+	color: black;
+}
+
+.nav-button {
+	padding: 4px;
 
 	font-family: serif;
 	font-weight: bold;
