@@ -17,7 +17,7 @@
     along with ShareVid.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import sqlite3
+import pymysql
 from main import connection, cursor
 
 import bcrypt
@@ -45,15 +45,18 @@ def secure_password(password):
 
 def add_user(username, password):
     hashed_password, salt = secure_password(password)
-    cursor.execute("INSERT INTO users(username, password, salt) VALUES(?, ?, ?)", (username, hashed_password, salt))
+    cursor.execute("INSERT INTO users(username, password, salt) VALUES(%s, %s, %s)", (username, hashed_password, salt))
     connection.commit()
 
     return
 
 def check_user(username, password):
-	result = cursor.execute("SELECT password, salt FROM users WHERE username = ?", (username,))
+	cursor.execute("SELECT password, salt FROM users WHERE username = %s", (username))
 
-	data = result.fetchone()
+	data = cursor.fetchone()
+	if data == None:
+		return False
+
 	database_password, salt = data[0], data[1]
 	input_password = bcrypt.hashpw(password.encode("utf-8"), salt)
 
@@ -68,7 +71,7 @@ def change_password(username, old_password, new_password):
 
 	hashed_password, salt = secure_password(new_password)
 
-	cursor.execute("UPDATE users SET password = ?, salt = ? WHERE username = ?", (hashed_password, salt, username))
+	cursor.execute("UPDATE users SET password = %s, salt = %s WHERE username = %s", (hashed_password, salt, username))
 	connection.commit()
 	if cursor.rowcount == 0:
 		return False

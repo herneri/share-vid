@@ -21,7 +21,7 @@
 """
 
 from sys import argv, stderr
-import sqlite3
+import pymysql
 
 import database
 import video
@@ -43,7 +43,7 @@ if argv[1][0] != '-' or argv[2][0] != '-':
 operation = argv[1]
 operation_target = argv[2]
 
-connection = sqlite3.connect("share-vid.db")
+connection = pymysql.connect(host="localhost", user="root", password="", database="sharevid")
 cursor = connection.cursor()
 
 if operation == "-a":
@@ -78,7 +78,7 @@ elif operation == "-u":
 		new_password = input("Enter new password: ")
 		hashed_password, salt = database.secure_password(new_password)
 
-		cursor.execute("UPDATE users SET password = ?, salt = ? WHERE username = ?", (hashed_password, salt, argv[3]))
+		cursor.execute("UPDATE users SET password = %s, salt = %s WHERE username = %s", (hashed_password, salt, argv[3]))
 		connection.commit()
 		if cursor.rowcount == 0:
 			stderr.write("sv-mgmt: Failed to change user's password \n")

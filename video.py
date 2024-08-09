@@ -17,7 +17,7 @@
     along with ShareVid.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import sqlite3
+import pymysql
 from os import listdir
 from os.path import isfile
 
@@ -32,8 +32,8 @@ class Video:
 		self.path = path
 
 def search_video(name, cursor):
-	result = cursor.execute("SELECT id, name, year, path FROM videos WHERE name = ?", (name,))
-	data = result.fetchone()
+	cursor.execute("SELECT id, name, year, path FROM videos WHERE name = %s", (name,))
+	data = cursor.fetchone()
 
 	if not data:
 		return None
@@ -43,8 +43,8 @@ def search_video(name, cursor):
 def videos_by_year(year, cursor):
 	videos = []
 
-	results = cursor.execute("SELECT id, name, year, path FROM videos WHERE year = ?", (year,))
-	for video in results.fetchall():
+	cursor.execute("SELECT id, name, year, path FROM videos WHERE year = %s", (year,))
+	for video in cursor.fetchall():
 		video_object = Video(video[0], video[1], video[2], video[3])
 		videos.append(video_object)
 
@@ -109,7 +109,7 @@ def update_video_db(connection, cursor):
 	for video in listdir("static/videos/"):
 		if isfile("static/videos/" + video):
 			name, extension, year, path = parse_video_name("videos/" + video)
-			cursor.execute("INSERT INTO videos(name, format, year, path) VALUES(?, ?, ?, ?)", (name, extension, year, path))
+			cursor.execute("INSERT INTO videos(name, format, year, path) VALUES(%s, %s, %s, %s)", (name, extension, year, path))
 			connection.commit()
 
 	return
