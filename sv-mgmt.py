@@ -21,6 +21,7 @@
 """
 
 from sys import argv, stderr
+from getpass import getpass
 import pymysql
 
 import database
@@ -49,7 +50,7 @@ cursor = connection.cursor()
 if operation == "-a":
 	if operation_target == "-u":
 		username = input("Enter username: ")
-		password = input("Enter password: ")
+		password = getpass("Enter password: ")
 		database.add_user(username, password)
 
 		print(f"User, {username}, sucessfully created!")
@@ -75,7 +76,7 @@ elif operation == "-u":
 			stderr.write("sv-mgmt: Username required for changing a password \n")
 			exit(2)
 
-		new_password = input("Enter new password: ")
+		new_password = getpass("Enter new password: ")
 		hashed_password, salt = database.secure_password(new_password)
 
 		cursor.execute("UPDATE users SET password = %s, salt = %s WHERE username = %s", (hashed_password, salt, argv[3]))
