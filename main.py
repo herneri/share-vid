@@ -23,6 +23,7 @@ from flask import Flask, render_template, redirect, url_for, request, session, f
 import pymysql
 
 from os import getenv
+from getpass import getpass
 import json
 
 import database
@@ -74,7 +75,9 @@ except FileNotFoundError:
 config = json.loads(config_file.read())
 config_file.close()
 
-connection = pymysql.connect(host=config["host"], user=config["user"], password="", database=config["database"])
+password = getpass(f"Enter password for {config["user"]} at {config["host"]}: ")
+
+connection = pymysql.connect(host=config["host"], user=config["user"], password=password, database=config["database"])
 cursor = connection.cursor()
 
 # The years of the videos that the website will be providing
