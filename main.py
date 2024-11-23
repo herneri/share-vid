@@ -22,57 +22,20 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash, get_flashed_messages
 import pymysql
 
-from os import getenv
 from getpass import getpass
-import json
+from json import loads
 
 import database
 from video import Video, videos_by_year, search_video
-
-CONFIG_PATH = getenv("HOME") + ".config/sharevid-config.json"
+import config
 
 try:
-	config_file = open(CONFIG_PATH, "r")
+	config_file = open(config.CONFIG_PATH, "r")
 except FileNotFoundError:
-	config = {
-		"user": None,
-		"host": None,
-		"database": None,
-		"years": [],
-		"secret_key": None
-	}
+	config.setup_config()
+	config_file = open(config.CONFIG_PATH, "r")
 
-	print(f"NOTICE: sharevid config file not found at {CONFIG_PATH}, creating one...")
-	config_file = open(CONFIG_PATH, "w")
-
-	choice = input("Would you like to setup the configuration now? [y/N]: ")
-
-	if choice.lower() != "y":
-		print(f"sharevid requires a valid config file to function, set it up at {CONFIG_PATH}")
-		config_file.write(json.dumps(config, indent=4))
-		exit(0)
-
-	for key in config.keys():
-		if key == "years":
-			print("Enter all the years this instance will show, type \"done\" when finished:")
-			year = ""
-
-			while True:
-				year = input()
-				if year.lower() == "done":
-					break
-
-				config["years"].append(year)
-
-			continue
-
-		config[key] = input(f"Enter value for the {key}: ")
-
-	config_file.write(json.dumps(config, indent=4))
-	config_file.close()
-	config_file = open(CONFIG_PATH, "r")
-
-config = json.loads(config_file.read())
+config = loads(config_file.read())
 config_file.close()
 
 password = getpass(f"Enter password for {config["user"]} at {config["host"]}: ")
