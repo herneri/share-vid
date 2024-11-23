@@ -22,10 +22,12 @@
 
 from sys import argv, stderr
 from getpass import getpass
+from json import loads
 import pymysql
 
 import database
 import video
+import config
 
 argument_count = len(argv)
 if (argument_count == 2 and argv[1] == "-h") or argument_count < 2:
@@ -44,7 +46,18 @@ if argv[1][0] != '-' or argv[2][0] != '-':
 operation = argv[1]
 operation_target = argv[2]
 
-connection = pymysql.connect(host="localhost", user="root", password="", database="sharevid")
+try:
+	config_file = open(config.CONFIG_PATH, "r")
+except FileNotFoundError:
+	config.setup_config()
+	config_file = open(config.CONFIG_PATH, "r")
+
+config = loads(config_file.read())
+config_file.close()
+
+password = getpass(f"Enter MySQL password for {config["user"]} at {config["host"]}: ")
+
+connection = pymysql.connect(host=config["host"], user=config["user"], password=password, database=config["database"])
 cursor = connection.cursor()
 
 if operation == "-a":
