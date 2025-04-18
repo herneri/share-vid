@@ -12,9 +12,10 @@ users you authorize on your instance.
 3. New users can only be added by the host
 4. User authorization that is secure against SQL injections
 5. Strong hashing and salting of user passwords
-6. Instance management CLI utility (sv-mgmt.py)
-7. Setup shell script (setup.sh)
-8. Interactive configuration
+6. Comment posting on videos
+7. Instance management CLI utility (sv-mgmt.py)
+8. Setup shell script (setup.sh)
+9. Interactive configuration
 
 ## Configuration
 
@@ -40,5 +41,7 @@ while writing the values in the file.
 - Python 3.9 or newer
 - Flask
 - MySQL DBMS
+- MongoDB DBMS
 - pymysql
+- pymongo
 - bcrypt (Python package)
