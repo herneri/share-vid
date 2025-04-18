@@ -17,8 +17,10 @@
     along with ShareVid.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+from main import connection, cursor, mongo_db
+
 import pymysql
-from main import connection, cursor
+import pymongo
 
 import bcrypt
 
@@ -31,7 +33,7 @@ def get_sql(sql_file_name):
 
 def init_db():
 	sql_statement = get_sql("sql/create-tables.sql")
-	cursor.executescript(sql_statement)
+	cursor.executemany(sql_statement)
 
 	connection.commit()
 	return
@@ -77,3 +79,19 @@ def change_password(username, old_password, new_password):
 		return False
 
 	return True
+
+def post_comment(mongo_db, session, video_id, comment_data):
+	video_comments = mongo_db["comments"]
+
+	comment_document = {
+		"video_id": video_id,
+		"user": session["username"],
+		"data": comment_data
+	}
+
+	video_comments.insert_one(comment_document)
+	return
+
+def load_comments(mongo_db, video_id):
+	video_comments = mongo_db["comments"]
+	return video_comments.find({"video_id": video_id})

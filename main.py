@@ -20,7 +20,9 @@
 """
 
 from flask import Flask, render_template, redirect, url_for, request, session, flash, get_flashed_messages
+
 import pymysql
+import pymongo
 
 from getpass import getpass
 from json import loads
@@ -41,7 +43,10 @@ config_file.close()
 password = getpass(f"Enter password for {config["user"]} at {config["host"]}: ")
 
 connection = pymysql.connect(host=config["host"], user=config["user"], password=password, database=config["database"])
+mongo_connection = pymongo.MongoClient(f"mongodb://{config["host"]}:27017/")
+
 cursor = connection.cursor()
+mongo_db = mongo_connection["sharevid"]
 
 # The years of the videos that the website will be providing
 years = config["years"]
@@ -91,7 +96,7 @@ def year(year):
 
 	return render_template("year.html", year=year, videos=videos)
 
-@app.route("/video/<video_name>")
+@app.route("/video/<video_name>", methods=["POST", "GET"])
 def video(video_name):
 	if "username" not in session:
 		flash("You are not logged in", "error")
@@ -102,7 +107,12 @@ def video(video_name):
 		flash(f"Failed to find video titled \"{video_name}\"")
 		return redirect(url_for("error", code=404))
 
-	return render_template("video.html", title=video.name, year=video.year, path=video.path)
+	if request.method == "POST":
+		if request.form["new-comment"]:
+			database.post_comment(mongo_db, session, video.id, request.form["new-comment"])
+
+	comments = database.load_comments(mongo_db, video.id)
+	return render_template("video.html", title=video.name, year=video.year, path=video.path, comments=comments)
 
 @app.route("/change-password/", methods=["POST", "GET"])
 def change_pw():
