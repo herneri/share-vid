@@ -18,6 +18,8 @@
 """
 
 import pymysql
+import pymongo
+
 from os import listdir
 from os.path import isfile
 
@@ -30,15 +32,19 @@ class Video:
 		self.name = name
 		self.year = year
 		self.path = path
+		# Is set in search_video() when found in MongoDB
+		self.favorite_document = None
 
-def search_video(name, cursor):
+def search_video(name, cursor, mongo_db, username):
 	cursor.execute("SELECT id, name, year, path FROM videos WHERE name = %s", (name,))
 	data = cursor.fetchone()
 
 	if not data:
 		return None
 
-	return Video(data[0], data[1], data[2], data[3])
+	video_object = Video(data[0], data[1], data[2], data[3])
+	video_object.favorite_document = mongo_db[username].find_one({"video_id": video_object.id})
+	return video_object
 
 def videos_by_year(year, cursor):
 	videos = []

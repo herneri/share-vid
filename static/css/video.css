@@ -7,6 +7,10 @@ video {
 	width: 60%;
 }
 
+#reaction-buttons {
+	padding-top: 4px;
+}
+
 #new-comment-text {
 	border-width: 3px;
 	border-color: black;

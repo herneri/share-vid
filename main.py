@@ -102,7 +102,7 @@ def video(video_name):
 		flash("You are not logged in", "error")
 		return redirect(url_for("home"))
 	
-	video = search_video(video_name, cursor)
+	video = search_video(video_name, cursor, mongo_db, session["username"])
 	if video == None:
 		flash(f"Failed to find video titled \"{video_name}\"")
 		return redirect(url_for("error", code=404))
@@ -112,7 +112,20 @@ def video(video_name):
 			database.post_comment(mongo_db, session, video.id, request.form["new-comment"])
 
 	comments = database.load_comments(mongo_db, video.id)
-	return render_template("video.html", title=video.name, year=video.year, path=video.path, comments=comments)
+	return render_template("video.html", title=video.name, year=video.year, path=video.path,
+			comments=comments, favorite_status=video.favorite_document, video_id=video.id)
+
+@app.route("/favorite/<video_id>/<video_name>", methods=["POST", "GET"])
+def favorite(video_id, video_name):
+	if "username" not in session:
+		flash("You are not logged in", "error")
+		return redirect(url_for("home"))
+
+	video_id = int(video_id)
+
+	current_favorite_document = database.load_favorite_document(mongo_db, video_id, session["username"])
+	database.change_favorite_status(mongo_db, video_id, current_favorite_document, session["username"])
+	return redirect(url_for("video", video_name=video_name))
 
 @app.route("/change-password/", methods=["POST", "GET"])
 def change_pw():

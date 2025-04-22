@@ -92,6 +92,34 @@ def post_comment(mongo_db, session, video_id, comment_data):
 	video_comments.insert_one(comment_document)
 	return
 
+# Returns true or false depending on favorite status
+def change_favorite_status(mongo_db, video_id, current_document, username):
+	favorites_collection = mongo_db[username]
+	favorite_document = {
+		"video_id": int(video_id)
+	}
+
+	if not current_document:
+		favorite_document["is_favorite"] = True
+		favorites_collection.insert_one(favorite_document)
+		return True
+
+	favorite_document = {
+		"$set": favorite_document
+	}
+
+	if current_document["is_favorite"] == False:
+		favorite_document["$set"]["is_favorite"] = True
+		favorites_collection.update_one(current_document, favorite_document)
+		return True
+
+	favorite_document["$set"]["is_favorite"] = False
+	favorites_collection.update_one(current_document, favorite_document)
+	return False
+
+def load_favorite_document(mongo_db, video_id, username):
+	return mongo_db[username].find_one({"video_id": int(video_id)})
+
 def load_comments(mongo_db, video_id):
 	video_comments = mongo_db["comments"]
 	return video_comments.find({"video_id": video_id})

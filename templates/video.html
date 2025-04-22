@@ -8,6 +8,14 @@
 	<h1 id="video-title"> {{title}} - ({{year}}) </h1>
 	<video src="{{ url_for("static", filename=path) }}" controls></video>
 
+	<form action="/favorite/{{video_id}}/{{title}}" method="post" id="reaction-buttons">
+		{% if not favorite_status or favorite_status["is_favorite"] == False %}
+			<input type="submit" value="Favorite"/>
+		{% else %}
+			<input type="submit" value="Unfavorite"/>
+		{% endif %}
+	</form>
+
 	<h2> Comments </h2>
 	<form action="#" method="post">
 		<input type="text" id="new-comment-text"i name="new-comment"/>
